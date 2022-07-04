@@ -26,6 +26,7 @@ async function getStatus(event) {
         // console.log("API expires on:", data.expiry, "Status:", data.status_code); // drills down to log date of expiry and status
         displayStatus(data);// to display the data in our modal
     } else { // throw an error if the response is not ok
+        displayException(data); // presents data to the user before throwing the error
         throw new Error(data.error); // built in Error function, but data.error is the descriptive message from the JSON that is being returned
     }
 }
@@ -43,10 +44,28 @@ function displayStatus(data) {
     resultsModal.show();
 }
 
+function processOptions(form) {
+    // 1. Iterate through options
+    // 2. Push that into a temporary array
+    // 3. Convert array back to a string
+
+    let optArray = [];
+
+    for (let entry of form.entries()) {
+        if (entry[0] === "options") { // if the first key = "options",
+            optArray.push(entry[1]); // then push the second value in each entry into my temporary array 
+        };
+    }
+    form.delete("options"); // will delete all values of "options" in our data
+    form.append("options", optArray.join()) // will append out new options in key:value pairs and join to convert it back to a string. This will append back a comma separated string of options to our form.
+    return form;
+}
+
+
 // ------------ To add the run checks modal
 async function postFrom(event) {
     // Js FormData interface: it can capture all of the fields in a HTML form and return it as an object. Give the object a fetch() and not do any other processing.
-    const form = new FormData(document.getElementById("checksform"));
+    const form = processOptions(new FormData(document.getElementById("checksform")));
 
     // for (let entry of form.entries()) { //  test will to iterate through each of the form entries putting it in 'entry'
     //     console.log(entry);
@@ -69,6 +88,7 @@ async function postFrom(event) {
         // console.log(data);
         displayErrors(data);
     } else {
+        displayException(data); // presents data to the user before throwing the error
         throw new Error(data.error);
     }
 }
@@ -97,3 +117,6 @@ function displayErrors(data) {
     resultsModal.show();
 }
 
+function displayException(data) {
+
+}
