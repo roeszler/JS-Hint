@@ -118,5 +118,15 @@ function displayErrors(data) {
 }
 
 function displayException(data) {
+    // in this format: {"error":"No or invalid API key","error_no":3,"status_code":403}
+    let heading = `An Exception Occurred`; // modal header
+    
+    results = `<div>The API returned status code ${data.status_code}</div>`; // first line modal info
+    results += `<div>Error number: <strong>${data.error_no}</strong></div>`; // second line modal info
+    results += `<div>Error text: <strong>${data.error}</strong></div>`;
 
+    document.getElementById("resultsModalTitle").innerText = heading; // updated the modal heading
+    document.getElementById("results-content").innerHTML = results; // updates the modal information
+
+    resultsModal.show(); // displays the modal with updated HTML & text.
 }
